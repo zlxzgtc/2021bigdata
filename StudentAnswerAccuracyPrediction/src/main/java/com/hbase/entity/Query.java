@@ -31,4 +31,7 @@ public class Query {
 		this.num = num;
 		this.duration = duration;
 	}
+	public Query() {
+		// TODO Auto-generated constructor stub
+	}
 }
