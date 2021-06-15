@@ -1,68 +1,69 @@
 package com.hbase.entity;
 
 public class Student {
-	private long id;
-	private double accu;
-	private double preaccu;
-	private String cid;
-	private int num;
-	private double duration;
+    private long id;
+    private double accu;
+    private double preaccu;
+    private String cid;
+    private int num;
+    private double duration;
 
-	public long getId() {
-		return id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
 
-	public double getAccu() {
-		return accu;
-	}
+        this.id = id;
+    }
 
-	public void setAccu(double accu) {
-		this.accu = accu;
-	}
+    public double getAccu() {
+        return accu;
+    }
 
-	public double getPreaccu() {
-		return preaccu;
-	}
+    public void setAccu(double accu) {
+        this.accu = accu;
+    }
 
-	public void setPreaccu(double preaccu) {
-		this.preaccu = preaccu;
-	}
+    public double getPreaccu() {
+        return preaccu;
+    }
 
-	public String getCid() {
-		return cid;
-	}
+    public void setPreaccu(double preaccu) {
+        this.preaccu = preaccu;
+    }
 
-	public void setCid(String cid) {
-		this.cid = cid;
-	}
+    public String getCid() {
+        return cid;
+    }
 
-	public int getNum() {
-		return num;
-	}
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
 
-	public void setNum(int num) {
-		this.num = num;
-	}
+    public int getNum() {
+        return num;
+    }
 
-	public double getDuration() {
-		return duration;
-	}
+    public void setNum(int num) {
+        this.num = num;
+    }
 
-	public void setDuration(double duration) {
-		this.duration = duration;
-	}
+    public double getDuration() {
+        return duration;
+    }
 
-	public Student(long id, double accu, double preaccu, String cid, int num, double duration) {
-		super();
-		this.id = id;
-		this.accu = accu;
-		this.preaccu = preaccu;
-		this.cid = cid;
-		this.num = num;
-		this.duration = duration;
-	}
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+
+    public Student(long id, double accu, double preaccu, String cid, int num, double duration) {
+        super();
+        this.id = id;
+        this.accu = accu;
+        this.preaccu = preaccu;
+        this.cid = cid;
+        this.num = num;
+        this.duration = duration;
+    }
 }
