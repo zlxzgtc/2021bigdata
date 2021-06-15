@@ -19,74 +19,79 @@
 				</svg>
 				<strong>&nbsp;Course Judger&nbsp;</strong>
 			</a>
-			<a class="navbar-brand" th:href="@{/student/courseinfo}" style="opacity: 0.7;"><strong>&nbsp;Courses Overview&nbsp;</strong></a>
+			<a class="navbar-brand" th:href="@{/student/courseinfo}"><strong>&nbsp;Courses Overview&nbsp;</strong></a>
 			<a class="navbar-brand" th:href="@{/student/quizbase}" style="opacity: 0.7;"><strong>&nbsp;Quiz Info&nbsp;</strong></a>
 			<a class="navbar-brand" th:href="@{/student/predict}" style="opacity: 0.7;"><strong>&nbsp;Accu Predict&nbsp;</strong></a>
 		</nav>
-
-		<input id="quizcountlist" th:value="${quizcountlist}" hidden>
-		<input id="quizacculist" th:value="${quizacculist}" hidden>
-		<input id="knowledgelist" th:value="${knowledgelist}" hidden>
+		
+		<input id="courseidlist" th:value="${courseidlist}" hidden>
+		<input id="videolengthlist" th:value="${videolengthlist}" hidden>
+		<input id="courseacculist" th:value="${courseacculist}" hidden>
+		<input id="averageaccu" th:value="${averageaccu}" hidden>
 
 		<div class="row m-3">
 			<div class="row p-4 m-auto col-md-12 rounded-lg">
-				<div class="card card-block card-stretch card-height bg-light col-md-6" style="border: none;">
+				<div class="card card-block card-stretch card-height">
 					<div class="card-header d-flex justify-content-between border-none">
 						<div class="header-title">
-							<h4 class="card-title">Student Info</h4>
+							<h4 class="card-title">Course Overview</h4>
 						</div>
 					</div>
 					<div class="table-responsive scroller" style="overflow:scroll;height:400px;">
 						<table class="table table-striped mb-0 table-borderless">
 							<thead class="">
 								<tr>
-									<th>学生编号</th>
-									<th>做题数量</th>
-									<th>当前正确率</th>
+									<th>课程编号</th>
+									<th>题目数</th>
+									<th>视频数</th>
+									<th>做题正确率</th>
+									<th>视频总时长</th>
+									<th>视频播放量</th>
+									<th>视频总观看时长</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="item:${stulist}">
-									<td th:text="${item.id}">id</td>
+								<tr th:each="item:${courselist}">
+									<td th:text="${item.cid}">cid</td>
 									<td th:text="${item.quizcount}">quizcount</td>
+									<td th:text="${item.videocount}">videocount</td>
 									<td th:text="${#numbers.formatDecimal(item.accu,1,'COMMA',2,'POINT')}">accu</td>
+									<td th:text="${#numbers.formatDecimal(item.videolength,1,'COMMA',2,'POINT')}">videolength</td>
+									<td th:text="${item.videoview}">videoview</td>
+									<td th:text="${#numbers.formatDecimal(item.videototallength,1,'COMMA',2,'POINT')}">videototallength</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
-				<div class="col-md-6">
-					<div class="header-title mt-3 ml-4">
-						<h4 class="card-title">Accu</h4>
-					</div>
-					<div id="quiz-accu" style="width: 100%; height: 400px;"></div>
-				</div>
 			</div>
-			
-			<div class="row p-4 m-auto col-md-12 rounded-lg bg-light">
-				<div class="card-body pt-0 col-md-12">
-					<form th:action="@{/student/index}" method="post" class="card-header-toolbar d-flex align-items-center">
-						<input type="text" class="form-control mb-2 mr-sm-2 ml-2" th:value="${id}" name="id" placeholder="学生编号">
-						<input type="reset" class="btn btn-outline-primary btn-sm m-1" value="重置" />
-						<input type="submit" class="btn btn-outline-primary btn-sm m-1" value="查找" />
-					</form>
-				</div>
-				<div class="col-md-7 bg-white rounded-lg mr-4 ml-4">
-					<div class="header-title  mt-3 ml-3 mb-3">
-						<h4 class="card-title">Mastery of knowledge points</h4>
+			<div class="row p-4 m-auto col-md-12 rounded-lg" style="height: 580px">
+				<div class="bg-light rounded-lg mr-4" style="width: 48%; height: 500px;">
+					<div class="header-title  mt-3 ml-3">
+						<h4 class="card-title">Watching Length & Accu</h4>
 					</div>
-					<div id="knowledge" style="width: 100%; height: 580px;"></div>
-					
+					<div id="video-accu" style="width: 90%; height: 400px;margin: auto;"></div>
 				</div>
 
-				<div class="col-md-4 bg-white rounded-lg ml-4">
+				<div class="bg-light rounded-lg ml-4" style="width: 48%; height: 500px;">
 					<div class="header-title mt-3 ml-3">
-						<h4 class="card-title">Suggestions</h4>
+						<h4 class="card-title">Average Accu</h4>
 					</div>
 					<div class="card-body pt-0">
-						<div id="course-sum-accu" style="width: 100%; height: 200px;"></div>
-						<div id="course-single-accu" style="width: 100%; height: 300px;"></div>
+						<form th:action="@{/student/courseinfo}" method="post" class="card-header-toolbar d-flex align-items-center form-inline">
+							<h6 class="mb-2 mr-sm-2 ml-4">播放量（次）：</h6>
+							<input type="text" class="form-control mb-2 mr-sm-2" th:value="${mincount}" name="mincount" placeholder="0">
+							<h6 class="mb-2 mr-sm-2 ml-2 mr-2">~</h6>
+							<input type="text" class="form-control mb-2 mr-sm-2" th:value="${maxcount}" name="maxcount" placeholder="4000000">
+							<h6 class="mb-2 mr-sm-2 ml-4">观看时长（h）：</h6>
+							<input type="text" class="form-control mb-2 mr-sm-2" th:value="${minlength}" name="minlength" placeholder="0">
+							<h6 class="mb-2 mr-sm-2 ml-2 mr-2">~</h6>
+							<input type="text" class="form-control mb-2 mr-sm-2" th:value="${maxlength}" name="maxlength" placeholder="200000">
+							<input type="reset" class="btn btn-outline-primary btn-sm m-1" value="重置" />
+							<input type="submit" class="btn btn-outline-primary btn-sm m-1" value="查找" />
+						</form>
 					</div>
+						<div id="avg-accu" style="width: 90%; height: 280px;margin: auto;"></div>
 				</div>
 			</div>
 		</div>
@@ -96,7 +101,7 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		 crossorigin="anonymous"></script>
 		<script src="/js/echarts.min.js"></script>
-		<script src="/js/quiz-accu.js"></script>
-		<script src="/js/knowledge.js"></script>
+		<script src="/js/video-accu.js"></script>
+		<script src="/js/avg-accu.js"></script>
 	</body>
 </html>
