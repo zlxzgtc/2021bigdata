@@ -29,6 +29,7 @@ public class HiveJDBC {
 //        problemCount();
 //        studentCount();
         videoCount();
+//        courseAcc();
     }
 
 
@@ -221,9 +222,9 @@ public class HiveJDBC {
         rs = stmt.executeQuery(sql);
         //统计播放次数
         while (rs.next()) {
-            String student_id = rs.getString(1);
+            String course_id = rs.getString(1);
             String v_plays = rs.getString(2);
-            Hbase.insertData("student", student_id, "info", "v_plays", v_plays);
+            Hbase.insertData("course", course_id, "info", "v_plays", v_plays);
         }
         //视频总时长
         sql = "select course_id,sum(video_duration/60) from(" +
@@ -242,6 +243,23 @@ public class HiveJDBC {
             String course_id = rs.getString(1);
             String v_watch_time = rs.getString(2);
             Hbase.insertData("course", course_id, "info", "v_watch_time", v_watch_time);
+        }
+        Hbase.close();
+        destory();
+    }
+
+    // 统计课程平均正确率
+    public static void courseAcc() throws Exception {
+        init();
+        Hbase.init();
+        String sql = "select b.course_id,sum(label)/count(*) from problem_act a left outer join problem_course b on a.problem_id=b.problem_id group by b.course_id";
+        System.out.println("Running: " + sql);
+        rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            String course_id = rs.getString(1);
+            String accuracy = rs.getString(2);
+            if(course_id.equals("0")) continue;
+            Hbase.insertData("course", course_id, "info", "accuracy", accuracy);
         }
         Hbase.close();
         destory();
