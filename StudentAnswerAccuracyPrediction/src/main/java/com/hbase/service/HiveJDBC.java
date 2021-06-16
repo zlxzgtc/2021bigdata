@@ -1,11 +1,12 @@
 package com.hbase.service;
 
-import org.junit.After;
-import org.junit.Before;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  * JDBC 操作 Hive（注：JDBC 访问 Hive 前需要先启动HiveServer2）
@@ -23,13 +24,18 @@ public class HiveJDBC {
 
     public static void main(String[] args) throws Exception {
 //        selectCourseBasic();
-        putCourseVnum();
+//        putCourseVnum();
+//        problemBasic();
+//        problemCount();
+//        studentCount();
+        videoCount();
     }
+
 
     // 加载驱动、创建连接dummyhost
     public static void init() throws Exception {
         Class.forName(driverName);
-        conn = DriverManager.getConnection(url,user,password);
+        conn = DriverManager.getConnection(url, user, password);
         stmt = conn.createStatement();
     }
 
@@ -105,7 +111,7 @@ public class HiveJDBC {
     public static void selectCourseBasic() throws Exception {
         init();
         Hbase.init();
-        Hbase.createTable("course",new String[]{"info"});
+        Hbase.createTable("course", new String[]{"info"});
         String sql = "select course_id,count(*)-1 p_num from (\n" +
                 "    select course_id,itemp from (\n" +
                 "        select course_id,split(item,'P_') items from course_info) sp \n" +
@@ -113,16 +119,17 @@ public class HiveJDBC {
                 "group by course_id";
         System.out.println("Running: " + sql);
         rs = stmt.executeQuery(sql);
-        System.out.println("course_id" + "\t" + "p_num" );
+        System.out.println("course_id" + "\t" + "p_num");
         while (rs.next()) {
             String course_id = rs.getString("course_id");
             String p_num = rs.getString("p_num");
-            Hbase.insertData("course",course_id,"info","p_num",p_num);
-            System.out.println(course_id+"   "+p_num) ;
+            Hbase.insertData("course", course_id, "info", "p_num", p_num);
+            System.out.println(course_id + "   " + p_num);
         }
         Hbase.close();
         destory();
     }
+
     public static void putCourseVnum() throws Exception {
         init();
         Hbase.init();
@@ -133,33 +140,112 @@ public class HiveJDBC {
                 "group by course_id";
         System.out.println("Running: " + sql);
         rs = stmt.executeQuery(sql);
-        System.out.println("course_id" + "\t" + "v_num" );
+        System.out.println("course_id" + "\t" + "v_num");
         while (rs.next()) {
             String course_id = rs.getString("course_id");
             String v_num = rs.getString("v_num");
-            Hbase.insertData("course",course_id,"info","v_num",v_num);
-            System.out.println(course_id+"   "+v_num) ;
+            Hbase.insertData("course", course_id, "info", "v_num", v_num);
+            System.out.println(course_id + "   " + v_num);
         }
         Hbase.close();
         destory();
     }
+
     public static void problemBasic() throws Exception {
         init();
         Hbase.init();
-        String sql = "select problem_id,concept,detail from problem_info";
+        String sql = "select distinct(a.problem_id,nvl(b.course_id,0),a.concept,a.detail) from problem_info a left outer join problem_activity b on a.problem_id = b.problem_id";
         System.out.println("Running: " + sql);
         rs = stmt.executeQuery(sql);
+        Hbase.createTable("problem", new String[]{"info"});
         while (rs.next()) {
-            String course_id = rs.getString("problem_id");
-            String v_num = rs.getString("v_num");
-            Hbase.insertData("course",course_id,"info","v_num",v_num);
-            System.out.println(course_id+"   "+v_num) ;
+            String jsons = rs.getString(1);
+            JSONObject object = JSONObject.parseObject(jsons);
+            String problem_id = object.getString("col1");
+            String course_id = object.getString("col2");
+            String concept = object.getString("col3");
+            String detail = object.getString("col4");
+            Hbase.insertData("problem", problem_id, "info", "course_id", course_id);
+            Hbase.insertData("problem", problem_id, "info", "concept", concept);
+            Hbase.insertData("problem", problem_id, "info", "detail", detail);
+        }
+        Hbase.close();
+        destory();
+    }
+
+    public static void problemCount() throws Exception {
+        init();
+        Hbase.init();
+        String sql = "select problem_id,count(*),sum(label) from problem_act group by problem_id";
+        System.out.println("Running: " + sql);
+        rs = stmt.executeQuery(sql);
+        Hbase.createTable("problem", new String[]{"info"});
+        while (rs.next()) {
+            String problem_id = rs.getString(1);
+            String count = rs.getString(2);
+            String right = rs.getString(3);
+            double acc =Double.valueOf(right) / Double.valueOf(count) ;
+            Hbase.insertData("problem", problem_id, "info", "count", count);
+            Hbase.insertData("problem", problem_id, "info", "accuracy", ""+acc);
+        }
+        Hbase.close();
+        destory();
+    }
+
+    //统计学生做题数和真实准确率
+    public static void studentCount() throws Exception {
+        init();
+        Hbase.init();
+        String sql = "select student_id,count(*),sum(label)/count(*) as acc from problem_act group by student_id";
+        System.out.println("Running: " + sql);
+        rs = stmt.executeQuery(sql);
+        Hbase.createTable("student", new String[]{"info"});
+        while (rs.next()) {
+            String student_id = rs.getString(1);
+            String p_num = rs.getString(2);
+            String true_accu = rs.getString(3);
+
+            Hbase.insertData("student", student_id, "info", "p_num", p_num);
+            Hbase.insertData("student", student_id, "info", "true_accu", true_accu);
         }
         Hbase.close();
         destory();
     }
 
 
+    public static void videoCount() throws Exception {
+        init();
+        Hbase.init();
+        String sql = "select course_id,sum(watching_count) from video_activity  group by course_id";
+        System.out.println("Running: " + sql);
+        rs = stmt.executeQuery(sql);
+        //统计播放次数
+        while (rs.next()) {
+            String student_id = rs.getString(1);
+            String v_plays = rs.getString(2);
+            Hbase.insertData("student", student_id, "info", "v_plays", v_plays);
+        }
+        //视频总时长
+        sql = "select course_id,sum(video_duration/60) from(" +
+                "select distinct(course_id,video_id),course_id,video_duration  from video_activity ) p " +
+                "group by course_id";
+        rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            String course_id = rs.getString(1);
+            String v_time = rs.getString(2);
+            Hbase.insertData("course", course_id, "info", "v_time", v_time);
+        }
+        //视频总播放时长
+        sql = "select course_id,sum(local_watching_time/60) from video_activity group by course_id";
+        rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            String course_id = rs.getString(1);
+            String v_watch_time = rs.getString(2);
+            Hbase.insertData("course", course_id, "info", "v_watch_time", v_watch_time);
+        }
+        Hbase.close();
+        destory();
+    }
 
     // 统计查询（会运行mapreduce作业）
     @Test
@@ -169,7 +255,7 @@ public class HiveJDBC {
         rs = stmt.executeQuery(sql);
         while (rs.next()) {
             System.out.println(rs.getArray(1));
-            System.out.println(rs.getInt(1) );
+            System.out.println(rs.getInt(1));
         }
     }
 
@@ -191,7 +277,7 @@ public class HiveJDBC {
 
 
     public static void destory() throws Exception {
-        if ( rs != null) {
+        if (rs != null) {
             rs.close();
         }
         if (stmt != null) {

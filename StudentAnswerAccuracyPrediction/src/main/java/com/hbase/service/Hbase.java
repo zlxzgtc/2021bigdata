@@ -11,12 +11,8 @@ public class Hbase {
     public static Admin admin;
     public static void main(String[] args)throws IOException{
         init();
-        System.out.println("1111111111111111111111111111111111111111111\n\n");
-        createTable("student",new String[]{"score"});
-        insertData("student","zhangsan","score","English","69");
-        insertData("student","zhangsan","score","Math","86");
-        insertData("student","zhangsan","score","Computer","77");
-        getData("student", "zhangsan", "score","English");
+
+        getData("problem", "P_intro:ex_practice_3", "info","concept");
         close();
     }
 
