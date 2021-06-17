@@ -65,7 +65,7 @@ $(function() {
 				name: '高等数学',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['25%', '15%'],
+				center: ['15%', '25%'],
 				roseType: 'area',
 				data: k1[0],
 				itemStyle: {
@@ -76,7 +76,7 @@ $(function() {
 				name: '离散数学',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['75%', '15%'],
+				center: ['35%', '25%'],
 				roseType: 'area',
 				data: k1[1],
 				itemStyle: {
@@ -87,7 +87,7 @@ $(function() {
 				name: '物理',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['25%', '40%'],
+				center: ['60%', '25%'],
 				roseType: 'area',
 				data: k1[2],
 				itemStyle: {
@@ -98,7 +98,7 @@ $(function() {
 				name: '机器学习',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['75%', '40%'],
+				center: ['85%', '25%'],
 				roseType: 'area',
 				data: k1[3],
 				itemStyle: {
@@ -109,7 +109,7 @@ $(function() {
 				name: '计算机网络',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['25%', '65%'],
+				center: ['15%', '70%'],
 				roseType: 'area',
 				data: k1[4],
 				itemStyle: {
@@ -120,7 +120,7 @@ $(function() {
 				name: '操作系统',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['75%', '65%'],
+				center: ['35%', '70%'],
 				roseType: 'area',
 				data: k1[5],
 				itemStyle: {
@@ -131,7 +131,7 @@ $(function() {
 				name: '数据结构',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['25%', '90%'],
+				center: ['60%', '70%'],
 				roseType: 'area',
 				data: k1[6],
 				itemStyle: {
@@ -142,7 +142,7 @@ $(function() {
 				name: '编译原理',
 				type: 'pie',
 				radius: [10, 50],
-				center: ['75%', '90%'],
+				center: ['85%', '70%'],
 				roseType: 'area',
 				data: k1[7],
 				itemStyle: {
