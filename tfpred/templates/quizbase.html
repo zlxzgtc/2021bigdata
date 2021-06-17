@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN" >
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+		 crossorigin="anonymous">
+		<link href="../static/css/backend.css" rel="stylesheet" type="text/css" />
+		</link>
+
+		<title>Course Judger</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-dark bg-blue" style="justify-content: flex-start">
+			<a class="navbar-brand" href="/student/index}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack" viewBox="0 0 16 16">
+					<path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
+					<path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
+				</svg>
+				<strong>&nbsp;Course Judger&nbsp;</strong>
+			</a>
+			<a class="navbar-brand" href="/student/courseinfo" style="opacity: 0.7;"><strong>&nbsp;Courses Overview&nbsp;</strong></a>
+			<a class="navbar-brand" href="/student/quizbase" style="opacity: 0.7;"><strong>&nbsp;Quiz Info&nbsp;</strong></a>
+			<a class="navbar-brand" href="/student/predict" ><strong>&nbsp;Accu Predict&nbsp;</strong></a>
+		</nav>
+		<div class="row m-3">
+			<div class="row p-4 m-auto col-md-12 rounded-lg">
+				<div class="card card-block card-stretch card-height">
+					<div class="card-header d-flex justify-content-between border-none">
+						<div class="header-title">
+							<h4 class="card-title">Predict Accuracy</h4>
+						</div>
+					</div>
+
+                    <div class="card-body pt-0">
+                        <form action="" method="post" enctype='multipart/form-data' class="card-header-toolbar d-flex align-items-center form-inline">
+                            <input type="file" name="file" class="mb-2 mr-sm-2 ml-4">
+                            <h6 class="mb-2 mr-sm-2 ml-4">阈值:：</h6>
+                            <input type="text"  class="form-control mb-2 mr-sm-2" name="threshold"  placeholder="请输入0~1">
+                            <input type="submit" class="btn btn-outline-primary btn-sm m-1" value="上传">
+                        </form>
+                    </div>
+
+					<div class="table-responsive scroller" style="overflow:scroll;height:600px;">
+						<table class="table table-striped mb-0 table-borderless">
+							<thead class="">
+								<tr>
+									<th>学生编号</th>
+									<th>题目编号</th>
+									<th>label</th>
+                                    <th>预测答对概率</th>
+								</tr>
+							</thead>
+							<tbody>
+                            {%  for row in data %}
+								<tr >
+									<td >{{ row[0] }}</td>
+									<td >{{ row[1] }}</td>
+									<td >{{ row[2] }}</td>
+                                    <td >{{ row[3] }}</td>
+								</tr>
+                            {% endfor %}
+							</tbody>
+						</table>
+					</div>
+                    <text>当前测试中，正确标签数量为{{ true_r }} ，错误标签数量为{{ all_p-true_r }}</text>
+                    <text>当前预测正确答题数量{{ rp }},预测准确率为{{ ((tp/all_p)*100)|round(2) }}% </text>
+				</div>
+			</div>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		 crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		 crossorigin="anonymous"></script>
+	</body>
+</html>

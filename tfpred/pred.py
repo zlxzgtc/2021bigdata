@@ -14,7 +14,9 @@ import happybase
 
 def pre_dataset(student_id, r):
     data = []
+    print('st',student_id)
     li = r.lrange(student_id, 0, -1)
+
     if len(li) <= 1:
         print("没有做题记录，无法预测")
     di = []
